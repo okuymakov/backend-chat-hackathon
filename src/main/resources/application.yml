@@ -1,0 +1,40 @@
+base_url: 'http://localhost:9090/auth'
+server:
+  port: 8081
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/hackathon
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: chat_service
+            client-secret: chat_service
+            clientName: chat_service
+            authorization-grant-type: authorization_code
+            redirectUri: '${base_url}/login/oauth2/code/{registrationId}'
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          keycloak:
+            authorization-uri: ${base_url}/realms/master/protocol/openid-connect/auth
+            token-uri: ${base_url}/realms/master/protocol/openid-connect/token
+            user-info-uri: ${base_url}/realms/master/protocol/openid-connect/userinfo
+            jwk-set-uri: ${base_url}/realms/master/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: ${base_url}/realms/master
+
